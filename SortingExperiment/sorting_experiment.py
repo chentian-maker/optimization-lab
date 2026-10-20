@@ -1,6 +1,7 @@
 
 import random
 import time
+import csv
 import matplotlib.pyplot as plt
 
 
@@ -96,41 +97,68 @@ if __name__ == "__main__":
 
     # 6. 准备运行时间实验
     sizes = [100, 300, 600, 1000, 2000]
+    repeat_times = 5
     algorithms = {
         "Bubble Sort": bubble_sort,
         "Insertion Sort": insertion_sort,
         "Merge Sort": merge_sort,
     }
 
+   
     results = {name: [] for name in algorithms}
+    results["Binary Search"] = []
 
     for size in sizes:
         data = [random.randint(0, 100000) for _ in range(size)]
+        expected = sorted(data)
 
+    # 重复测试每一种排序算法，计算平均时间
         for name, func in algorithms.items():
-            start = time.perf_counter()
-            output = func(data)
-            elapsed = time.perf_counter() - start
+            timings = []
 
-            assert output == sorted(data)
-            results[name].append(elapsed)
+            for _ in range(repeat_times):
+                start = time.perf_counter()
+                output = func(data)
+                elapsed = time.perf_counter() - start
 
-        # 对二分查找单独计时，避免把排序时间算进去
-        sorted_data = sorted(data)
+                timings.append(elapsed)
+                assert output == expected
+
+            average_time = sum(timings) / len(timings)
+            results[name].append(average_time)
+
+        # 二分查找：重复执行多次，计算单次平均时间
+        sorted_data = expected
         target = sorted_data[-1]
+        search_repeats = 10000
 
         start = time.perf_counter()
-        binary_search(sorted_data, target)
+
+        for _ in range(search_repeats):
+            binary_search(sorted_data, target)
+
         elapsed = time.perf_counter() - start
-
-        if "Binary Search" not in results:
-            results["Binary Search"] = []
-
-        results["Binary Search"].append(elapsed)
+        average_search_time = elapsed / search_repeats
+        results["Binary Search"].append(average_search_time)
 
         print(f"数组规模 {size}：测试完成")
 
     # 7. 绘制运行时间图
+    
+    # 将实验结果保存到 CSV 文件
+    with open("sorting_runtime.csv", "w", newline="", encoding="utf-8-sig") as f:
+        writer = csv.writer(f)
+
+        # 写入表头
+        writer.writerow(["Array Size"] + list(results.keys()))
+
+        # 每一行对应一种数组规模的实验结果
+        for i, size in enumerate(sizes):
+            row = [size] + [results[name][i] for name in results]
+            writer.writerow(row)
+
+    print("实验数据已保存：sorting_runtime.csv")
+
     plt.figure(figsize=(10, 6))
 
     for name, times in results.items():
