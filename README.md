@@ -1,20 +1,52 @@
-\# My Learning Roadmap
 
+# optimization-lab
 
+记录优化算法、基础算法、C++/Python 编程练习与科研学习进度。
 
-\## Goals
+Repository for optimization algorithms, fundamental algorithms, programming practice, and research preparation.
 
-\- Learn Python with CS50P
+## Repository Structure
 
-\- Learn C++ with LearnCpp
+### Optimization and Algorithms
+- `python/`: Python implementations
+- `cpp/`: C++ implementations
+- `algorithms/`: Algorithm explanations
+- `experiments/`: Experiment scripts
+- `results/`: Experiment results
+- `docs/`: Documentation
 
-\- Practice algorithms
+### Programming Practice
+- `CS50P/`: Python learning exercises
+- `DebuggingPractice/`: C++ debugging and GDB practice
+- `HashingPractice/`: Hash table implementation and automated tests
+- `NumPy/`: NumPy exercises
+- `ReferencePointerPractice/`: C++ references and pointers
+- `SortingExperiment/`: Sorting algorithm experiments
 
-\- Build a foundation for optimization research
+## Current Progress
 
+- Sphere test function
+- Binary search
+- C++ debugging with GDB
+- C++ references, pointers, and swap
+- MyHashTable implementation using separate chaining
+- Hash table edge-case tests
+- Automatic resizing and load-factor checks
 
+## MyHashTable
 
-\## Daily Progress
+The hash table practice covers:
 
-\- 2026-10-18: Learned Git basics, commits, branches, and merge.
+- Insert, find, update, and remove
+- Collision handling with separate chaining
+- Negative keys and duplicate keys
+- Automated edge-case tests
+- Dynamic resizing and rehashing
+- Load-factor monitoring
 
+## Learning Goals
+
+- Strengthen C++ and Python programming skills
+- Practice algorithms and data structures
+- Build a foundation for multi-objective optimization research
+- Develop reliable, testable code

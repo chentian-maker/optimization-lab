@@ -1,5 +1,23 @@
-﻿.vs/
+
+# C++ build artifacts
+.vs/
 *.exe
+*.o
+*.out
 *.log
+build/
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+
+# IDE settings
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+
+# Local practice files
 /DebuggingPractice/test.cpp
 /HashingPractice/test.cpp
