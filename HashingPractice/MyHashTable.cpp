@@ -32,7 +32,7 @@ public:
     }
 
     // 下面保留你原来的 insert、find、remove、display
-};
+
     void insert(int key, int value) {
         int index = hash(key);
 
@@ -92,6 +92,7 @@ public:
     }
 };
 
+#ifndef MYHASHTABLE_TEST
 int main() {
     MyHashTable ht(7);
 
@@ -132,3 +133,4 @@ int main() {
 
     return 0;
 }
+#endif
