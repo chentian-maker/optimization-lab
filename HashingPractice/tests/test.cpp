@@ -206,6 +206,63 @@ int main() {
               "loadFactor=" + to_string(ht.loadFactor()));
     }
 
+    // 测试7：重复插入、扩容和删除的综合测试
+    {
+        MyHashTable ht(7);
+
+        // 测试7.1：重复插入同一个 key
+        ht.insert(1, 10);
+        ht.insert(1, 20);
+
+        int value = -1;
+        bool found = ht.find(1, value);
+
+        check("重复插入：更新 value 且不增加 size",
+              found && value == 20 && ht.size() == 1,
+              "value=20, size=1",
+              "value=" + to_string(value)
+                  + ", size=" + to_string(ht.size()));
+
+        // 测试7.2：继续插入大量数据，触发自动扩容
+        for (int i = 2; i <= 30; ++i) {
+            ht.insert(i, i * 10);
+        }
+
+        check("综合测试：扩容后数据数量正确",
+              ht.size() == 30 && ht.bucketCount() > 7,
+              "size=30 且桶数量大于 7",
+              "size=" + to_string(ht.size())
+                  + ", 桶数量=" + to_string(ht.bucketCount()));
+
+        // 测试7.3：删除存在的 key，size 应减一
+        bool removed = ht.remove(10);
+
+        check("删除存在的 key：size 减一",
+              removed && ht.size() == 29,
+              "删除成功，size=29",
+              string(removed ? "删除成功" : "删除失败")
+                  + ", size=" + to_string(ht.size()));
+
+        // 测试7.4：删除不存在的 key，size 不应改变
+        removed = ht.remove(9999);
+
+        check("删除不存在的 key：size 不变",
+              !removed && ht.size() == 29,
+              "删除失败，size=29",
+              string(removed ? "删除成功" : "删除失败")
+                  + ", size=" + to_string(ht.size()));
+
+        // 测试7.5：多次扩容后，旧数据仍然正确
+        value = -1;
+        found = ht.find(1, value);
+
+        check("扩容后：原有 key-value 保持正确",
+              found && value == 20,
+              "找到 key=1，value=20",
+              found ? "找到 key=1，value=" + to_string(value)
+                    : "未找到 key=1");
+    }
+
     cout << "===== 测试汇总 =====\n";
     cout << "通过：" << passed << '\n';
     cout << "失败：" << failed << '\n';
