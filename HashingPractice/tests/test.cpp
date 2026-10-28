@@ -159,6 +159,53 @@ int main() {
                     : "未找到 key=5");
     }
 
+
+    
+    // 测试6：批量插入、查找和自动扩容
+    {
+        MyHashTable ht(7);
+
+        // 插入100个键值对
+        for (int i = 0; i < 100; ++i) {
+            ht.insert(i, i * 10);
+        }
+
+        // 验证100个key的value是否正确
+        bool allCorrect = true;
+        int value = -1;
+
+        for (int i = 0; i < 100; ++i) {
+            if (!ht.find(i, value) || value != i * 10) {
+                allCorrect = false;
+                break;
+            }
+        }
+
+        check("批量测试：插入并查找100个key",
+              allCorrect,
+              "100个key全部找到，value均正确",
+              allCorrect ? "100个key全部正确"
+                         : "至少一个key丢失或value错误");
+
+        // 检查自动扩容
+        check("自动扩容：桶数量增加",
+              ht.bucketCount() > 7,
+              "桶数量大于7",
+              "桶数量=" + to_string(ht.bucketCount()));
+
+        // 检查元素数量
+        check("元素数量：100个key",
+              ht.size() == 100,
+              "size=100",
+              "size=" + to_string(ht.size()));
+
+        // 检查负载因子
+        check("负载因子：不超过0.75",
+              ht.loadFactor() <= 0.75,
+              "loadFactor <= 0.75",
+              "loadFactor=" + to_string(ht.loadFactor()));
+    }
+
     cout << "===== 测试汇总 =====\n";
     cout << "通过：" << passed << '\n';
     cout << "失败：" << failed << '\n';

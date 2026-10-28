@@ -11,6 +11,7 @@ private:
     // 先声明容量，再声明哈希表
     int capacity;
     vector<list<pair<int, int>>> table;
+    int elementCount;
 
     // 检查容量是否合法
     static int checkedCapacity(int size) {
@@ -24,29 +25,72 @@ private:
     int hash(int key) const {
         return ((key % capacity) + capacity) % capacity;
     }
+   // 扩大桶的数量，并重新分配所有元素
+   void rehash(int newCapacity) {
+    // 暂存扩容前的数据
+    auto oldTable = std::move(table);
 
+    // 创建新的桶
+    capacity = newCapacity;
+    table.clear();
+    table.resize(capacity);
+
+    // 将原有元素重新放入新桶
+    elementCount = 0;
+
+    for (const auto& bucket : oldTable) {
+        for (const auto& item : bucket) {
+            int index = hash(item.first);
+            table[index].push_front(item);
+            ++elementCount;
+        }
+    }
+}
 public:
     // 按照成员声明顺序初始化
     MyHashTable(int size)
-        : capacity(checkedCapacity(size)), table(capacity) {
-    }
+    : capacity(checkedCapacity(size)),
+      table(capacity),
+      elementCount(0) {
+}
 
     // 下面保留你原来的 insert、find、remove、display
+    // 返回当前元素数量
+    int size() const {
+        return elementCount;
+}
 
-    void insert(int key, int value) {
-        int index = hash(key);
+    // 返回当前桶的数量
+    int bucketCount() const {
+        return capacity;
+}
 
-        // 先检查当前链表中是否已有该 Key
-        for (auto& item : table[index]) {
-            if (item.first == key) {
-                item.second = value;
-                return;
-            }
+    // 返回当前负载因子
+    double loadFactor() const {
+        return static_cast<double>(elementCount) / capacity;
+}
+   void insert(int key, int value) {
+    int index = hash(key);
+
+    // 如果 key 已经存在，只更新 value
+    for (auto& item : table[index]) {
+        if (item.first == key) {
+            item.second = value;
+            return;
         }
-
-        // Key 不存在，添加到链表头部
-        table[index].push_front({key, value});
     }
+
+    // 如果插入新元素会使负载因子超过 0.75，则扩容
+    if (static_cast<double>(elementCount + 1) / capacity > 0.75) {
+        rehash(capacity * 2);
+
+        // 容量改变后，必须重新计算桶索引
+        index = hash(key);
+    }
+
+    table[index].push_front({key, value});
+    ++elementCount;
+}
 
     // 查找 Key：成功返回 true，并通过引用返回 Value
     bool find(int key, int& value) const {
@@ -70,6 +114,7 @@ public:
              it != table[index].end(); ++it) {
             if (it->first == key) {
                 table[index].erase(it);
+                --elementCount;
                 return true;
             }
         }
