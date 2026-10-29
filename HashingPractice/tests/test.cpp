@@ -2,8 +2,10 @@
 #define MYHASHTABLE_TEST
 #include "../MyHashTable.cpp"
 
+#include <cassert>
 #include <iostream>
 #include <string>
+
 using namespace std;
 
 int passed = 0;
@@ -29,6 +31,16 @@ void check(const string& name,
 
 int main() {
     cout << "===== MyHashTable 自动化测试 =====\n\n";
+
+    // 测试0：学习 assert
+    {
+        int example = 100;
+
+        assert(example == 100);
+
+        cout << "[PASS] assert 示例\n";
+        cout << "  条件 example == 100 成立\n\n";
+    }
 
     // 测试1：空表
     {
@@ -114,6 +126,7 @@ int main() {
                            + to_string(value2)
                      : "未找到 key=1008");
 
+        // 删除第一个冲突键
         bool removed = ht.remove(1001);
 
         check("冲突 key：删除 1001",
@@ -122,6 +135,17 @@ int main() {
               removed ? "删除成功（true）"
                       : "删除失败（false）");
 
+        // 新增：确认被删除的 key 已不存在
+        int deletedValue = -1;
+        bool deletedFound = ht.find(1001, deletedValue);
+
+        check("冲突 key：删除后 1001 不存在",
+              !deletedFound,
+              "find(1001) 返回 false",
+              deletedFound ? "仍然找到 key=1001"
+                           : "未找到 key=1001");
+
+        // 确认删除一个冲突键没有影响另一个键
         int value3 = -1;
         bool found3 = ht.find(1008, value3);
 
@@ -159,8 +183,6 @@ int main() {
                     : "未找到 key=5");
     }
 
-
-    
     // 测试6：批量插入、查找和自动扩容
     {
         MyHashTable ht(7);
@@ -170,22 +192,35 @@ int main() {
             ht.insert(i, i * 10);
         }
 
-        // 验证100个key的value是否正确
+        // 验证100个 key，并定位第一个错误
         bool allCorrect = true;
         int value = -1;
+        string errorMessage = "100个 key 全部正确";
 
         for (int i = 0; i < 100; ++i) {
-            if (!ht.find(i, value) || value != i * 10) {
+            bool found = ht.find(i, value);
+
+            if (!found) {
                 allCorrect = false;
+                errorMessage =
+                    "查找失败，key=" + to_string(i);
+                break;
+            }
+
+            if (value != i * 10) {
+                allCorrect = false;
+                errorMessage =
+                    "value 错误，key=" + to_string(i)
+                    + "，预期=" + to_string(i * 10)
+                    + "，实际=" + to_string(value);
                 break;
             }
         }
 
-        check("批量测试：插入并查找100个key",
+        check("批量测试：插入并查找100个 key",
               allCorrect,
-              "100个key全部找到，value均正确",
-              allCorrect ? "100个key全部正确"
-                         : "至少一个key丢失或value错误");
+              "100个 key 全部找到，value 均正确",
+              errorMessage);
 
         // 检查自动扩容
         check("自动扩容：桶数量增加",
@@ -194,7 +229,7 @@ int main() {
               "桶数量=" + to_string(ht.bucketCount()));
 
         // 检查元素数量
-        check("元素数量：100个key",
+        check("元素数量：100个 key",
               ht.size() == 100,
               "size=100",
               "size=" + to_string(ht.size()));
@@ -230,9 +265,10 @@ int main() {
 
         check("综合测试：扩容后数据数量正确",
               ht.size() == 30 && ht.bucketCount() > 7,
-              "size=30 且桶数量大于 7",
+              "size=30 且桶数量大于7",
               "size=" + to_string(ht.size())
-                  + ", 桶数量=" + to_string(ht.bucketCount()));
+                  + ", 桶数量="
+                  + to_string(ht.bucketCount()));
 
         // 测试7.3：删除存在的 key，size 应减一
         bool removed = ht.remove(10);
@@ -252,7 +288,7 @@ int main() {
               string(removed ? "删除成功" : "删除失败")
                   + ", size=" + to_string(ht.size()));
 
-        // 测试7.5：多次扩容后，旧数据仍然正确
+        // 测试7.5：扩容后，原有数据仍然正确
         value = -1;
         found = ht.find(1, value);
 
@@ -263,9 +299,11 @@ int main() {
                     : "未找到 key=1");
     }
 
+    // 输出测试汇总
     cout << "===== 测试汇总 =====\n";
     cout << "通过：" << passed << '\n';
     cout << "失败：" << failed << '\n';
+    cout << "总计：" << passed + failed << '\n';
 
     return failed == 0 ? 0 : 1;
 }
