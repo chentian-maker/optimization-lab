@@ -1,7 +1,7 @@
 
 #define MYHASHTABLE_TEST
 #include "../MyHashTable.cpp"
-
+#include <stdexcept>
 #include <cassert>
 #include <iostream>
 #include <string>
@@ -32,6 +32,55 @@ void check(const string& name,
 int main() {
     cout << "===== MyHashTable 自动化测试 =====\n\n";
 
+
+    // 测试：容量为0时应抛出异常
+{
+    bool caught = false;
+
+    try {
+        MyHashTable ht(0);
+    } catch (const invalid_argument&) {
+        caught = true;
+    }
+
+    check("非法容量：0",
+          caught,
+          "抛出 invalid_argument",
+          caught ? "捕获到异常" : "没有捕获到异常");
+}
+
+// 测试：容量为负数时应抛出异常
+{
+    bool caught = false;
+
+    try {
+        MyHashTable ht(-1);
+    } catch (const invalid_argument&) {
+        caught = true;
+    }
+
+    check("非法容量：-1",
+          caught,
+          "抛出 invalid_argument",
+          caught ? "捕获到异常" : "没有捕获到异常");
+}
+
+// 测试：容量为1时应创建成功
+{
+    bool created = false;
+
+    try {
+        MyHashTable ht(1);
+        created = ht.bucketCount() == 1;
+    } catch (const exception&) {
+        created = false;
+    }
+
+    check("合法容量：1",
+          created,
+          "成功创建，桶数量为1",
+          created ? "创建成功" : "创建失败");
+}
     // 测试0：学习 assert
     {
         int example = 100;
