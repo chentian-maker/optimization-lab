@@ -1,21 +1,20 @@
 
-
 #include <iostream>
 #include <vector>
 #include <list>
 #include <utility>
 #include <stdexcept>
+#include <limits>
+#include <unordered_set>
 
 using namespace std;
 
 class MyHashTable {
 private:
-    // 先声明容量，再声明哈希表
     int capacity;
     vector<list<pair<int, int>>> table;
     int elementCount;
 
-    // 检查容量是否合法
     static int checkedCapacity(int size) {
         if (size <= 0) {
             throw invalid_argument("Capacity must be positive.");
@@ -23,22 +22,28 @@ private:
         return size;
     }
 
-    // 将 Key 映射到合法的数组索引
     int hash(int key) const {
         return ((key % capacity) + capacity) % capacity;
     }
 
-    // 扩大桶的数量，并重新分配所有元素
+    bool containsKey(int key) const {
+        int index = hash(key);
+
+        for (const auto& item : table[index]) {
+            if (item.first == key) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     void rehash(int newCapacity) {
-        // 暂存扩容前的数据
         auto oldTable = std::move(table);
 
-        // 创建新的桶
         capacity = newCapacity;
         table.clear();
         table.resize(capacity);
-
-        // 将原有元素重新放入新桶
         elementCount = 0;
 
         for (const auto& bucket : oldTable) {
@@ -51,33 +56,27 @@ private:
     }
 
 public:
-    // 按照成员声明顺序初始化
     MyHashTable(int size)
         : capacity(checkedCapacity(size)),
           table(capacity),
           elementCount(0) {
     }
 
-    // 返回当前元素数量
     int size() const {
         return elementCount;
     }
 
-    // 返回当前桶的数量
     int bucketCount() const {
         return capacity;
     }
 
-    // 返回当前负载因子
     double loadFactor() const {
         return static_cast<double>(elementCount) / capacity;
     }
 
-    // 插入单个键值对；若 key 已存在，则更新 value
     void insert(int key, int value) {
         int index = hash(key);
 
-        // 如果 key 已经存在，只更新 value
         for (auto& item : table[index]) {
             if (item.first == key) {
                 item.second = value;
@@ -85,28 +84,52 @@ public:
             }
         }
 
-        // 如果插入新元素会使负载因子超过 0.75，则扩容
         if (static_cast<double>(elementCount + 1) / capacity > 0.75) {
-            rehash(capacity * 2);
+            if (capacity > numeric_limits<int>::max() / 2) {
+                throw length_error("Hash table capacity is too large.");
+            }
 
-            // 容量改变后，必须重新计算桶索引
+            rehash(capacity * 2);
             index = hash(key);
         }
 
-        // 将新键值对插入对应桶
         table[index].push_front({key, value});
         ++elementCount;
     }
 
-    // 批量插入键值对
-    // 复用 insert()，统一处理重复 key、负数 key 和自动扩容
+    // 批量插入：使用 unordered_set 统计需要新增的 key
     void insertMany(const vector<pair<int, int>>& entries) {
+        if (entries.empty()) {
+            return;
+        }
+
+        unordered_set<int> newKeys;
+        newKeys.reserve(entries.size());
+
+        for (const auto& entry : entries) {
+            int key = entry.first;
+
+            if (!containsKey(key)) {
+                newKeys.insert(key);
+            }
+        }
+
+        const size_t requiredCount =
+            static_cast<size_t>(elementCount) + newKeys.size();
+
+        while (static_cast<double>(requiredCount) / capacity > 0.75) {
+            if (capacity > numeric_limits<int>::max() / 2) {
+                throw length_error("Hash table capacity is too large.");
+            }
+
+            rehash(capacity * 2);
+        }
+
         for (const auto& entry : entries) {
             insert(entry.first, entry.second);
         }
     }
 
-    // 查找 Key：成功返回 true，并通过引用返回 Value
     bool find(int key, int& value) const {
         int index = hash(key);
 
@@ -120,7 +143,6 @@ public:
         return false;
     }
 
-    // 删除指定 Key；找到并删除时返回 true
     bool remove(int key) {
         int index = hash(key);
 
@@ -136,7 +158,6 @@ public:
         return false;
     }
 
-    // 打印所有桶及其链表
     void display() const {
         for (int i = 0; i < capacity; ++i) {
             cout << "Bucket " << i << ": ";
