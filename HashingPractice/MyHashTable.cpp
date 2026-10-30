@@ -173,53 +173,5 @@ public:
 };
 
 #ifndef MYHASHTABLE_TEST
-int main() {
-    MyHashTable ht(7);
 
-    cout << "=== Insert ===" << endl;
-    ht.insert(1001, 90);
-    ht.insert(1008, 88);
-    ht.insert(1002, 85);
-    ht.insert(1003, 95);
-    ht.display();
-
-    cout << "\n=== Batch Insert ===" << endl;
-    ht.insertMany({
-        {10, 100},
-        {20, 200},
-        {30, 300},
-        {10, 999}
-    });
-    ht.display();
-
-    cout << "\n=== Find ===" << endl;
-    int value = 0;
-
-    if (ht.find(1008, value)) {
-        cout << "Key 1008 found, value = "
-             << value << endl;
-    } else {
-        cout << "Key 1008 not found" << endl;
-    }
-
-    cout << "\n=== Update ===" << endl;
-    ht.insert(1008, 92);
-    ht.find(1008, value);
-    cout << "Updated value of 1008 = "
-         << value << endl;
-
-    cout << "\n=== Remove ===" << endl;
-    if (ht.remove(1001)) {
-        cout << "Key 1001 removed" << endl;
-    }
-
-    ht.display();
-
-    cout << "\n=== Find Missing Key ===" << endl;
-    if (!ht.find(9999, value)) {
-        cout << "Key 9999 not found" << endl;
-    }
-
-    return 0;
-}
 #endif
