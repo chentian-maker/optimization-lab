@@ -1,6 +1,4 @@
-
-#define MYHASHTABLE_TEST
-#include "../MyHashTable.cpp"
+#include "MyHashTable.h"
 
 #include <chrono>
 #include <iostream>
