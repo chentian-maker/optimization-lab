@@ -21,3 +21,5 @@ __pycache__/
 # Local practice files
 /DebuggingPractice/test.cpp
 /HashingPractice/test.cpp
+__pycache__/
+*.pyc
