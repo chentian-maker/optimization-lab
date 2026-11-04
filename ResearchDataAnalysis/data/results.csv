@@ -1,0 +1,7 @@
+algorithm,run,igd,hv,runtime_s
+NSGA-II,1,0.12,0.72,12.4
+NSGA-II,2,0.14,0.70,12.1
+NSGA-II,3,0.13,0.71,12.7
+MOEA/D,1,0.10,0.75,14.0
+MOEA/D,2,0.11,0.74,13.8
+MOEA/D,3,0.09,0.76,14.2
