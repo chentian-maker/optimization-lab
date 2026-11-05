@@ -1,0 +1,4 @@
+﻿algorithm,problem,run,igd,hv,runtime_s
+NSGA-II,DTLZ1,6,,0.7392,2.3082
+MOEA/D,DTLZ1,6,0.0995,,2.0322
+NSGA-III,DTLZ1,8,0.1069,0.8023,-3.0

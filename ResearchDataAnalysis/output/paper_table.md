@@ -1,0 +1,16 @@
+# Multi-objective Optimization Results
+
+> Synthetic data for learning only.
+> Not real algorithm benchmark results.
+
+| Problem | Algorithm | Runs | IGD ↓ | HV ↑ | Runtime (s) ↓ |
+|---|---|---:|---:|---:|---:|
+| DTLZ1 | NSGA-II | 9 | 0.1160 ± 0.0076 | 0.7298 ± 0.0263 | 2.5289 |
+| DTLZ1 | MOEA/D | 9 | 0.1009 ± 0.0083 | 0.7598 ± 0.0268 | 2.0528 |
+| DTLZ1 | NSGA-III | 9 | **0.0896 ± 0.0149** | **0.8060 ± 0.0243** | 2.8386 |
+| DTLZ2 | NSGA-II | 10 | 0.0895 ± 0.0114 | 0.7758 ± 0.0198 | 2.0268 |
+| DTLZ2 | MOEA/D | 10 | 0.0727 ± 0.0144 | 0.8224 ± 0.0340 | 1.5631 |
+| DTLZ2 | NSGA-III | 10 | **0.0580 ± 0.0073** | **0.8480 ± 0.0299** | 2.4031 |
+| DTLZ3 | NSGA-II | 10 | 0.1413 ± 0.0098 | 0.6775 ± 0.0156 | 3.0207 |
+| DTLZ3 | MOEA/D | 10 | 0.1304 ± 0.0118 | 0.7165 ± 0.0178 | 2.6015 |
+| DTLZ3 | NSGA-III | 10 | **0.1180 ± 0.0122** | **0.7572 ± 0.0281** | 3.3788 |
