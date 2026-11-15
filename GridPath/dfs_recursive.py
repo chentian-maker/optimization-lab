@@ -18,7 +18,7 @@ def reconstruct_path(parent, start, goal):
     return path
 
 
-def dfs_recursive(grid, start, goal):
+def dfs_recursive(grid, start, goal, return_details=False, verbose=True):
 
     # 检查起点和终点
     if not is_walkable(grid, start):
@@ -76,24 +76,42 @@ def dfs_recursive(grid, start, goal):
     # 开始搜索
     found = visit(start, 0)
 
-    # 输出访问数量
-    print(f"\n访问节点数量：{len(search_log)}")
+    # 根据 verbose 决定是否打印
+    if verbose:
 
-    # 输出搜索日志
-    print("\n===== 递归 DFS 搜索过程 =====")
+        print(f"\n访问节点数量：{len(search_log)}")
 
-    for record in search_log:
+        print("\n===== 递归 DFS 搜索过程 =====")
 
-        print(f"\n第 {record['step']} 步")
-        print(f"当前访问：{record['current']}")
-        print(f"递归深度：{record['depth']}")
-        print(f"新增邻居：{record['new_neighbors']}")
+        for record in search_log:
 
-    # 返回搜索结果
+            print(f"\n第 {record['step']} 步")
+            print(f"当前访问：{record['current']}")
+            print(f"递归深度：{record['depth']}")
+            print(f"新增邻居：{record['new_neighbors']}")
+
+    # 获取最终路径
     if found:
-        return reconstruct_path(parent, start, goal)
+        path = reconstruct_path(parent, start, goal)
+    else:
+        path = None
 
-    return None
+    # 返回完整实验数据
+    if return_details:
+
+        return {
+            "path": path,
+
+            "visited": [
+                record["current"]
+                for record in search_log
+            ],
+
+            "search_log": search_log
+        }
+
+    # 默认只返回路径
+    return path
 
 
 if __name__ == "__main__":

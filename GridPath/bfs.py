@@ -24,7 +24,7 @@ def reconstruct_path(parent, start, goal):
     return path
 
 
-def bfs(grid, start, goal):
+def bfs(grid, start, goal, return_details=False, verbose=True):
 
     # 检查起点和终点是否合法
     if not is_walkable(grid, start):
@@ -94,24 +94,42 @@ def bfs(grid, start, goal):
         if found:
             break
 
-    # 输出访问统计
-    print(f"\n访问节点数量：{visited_count}")
+    # 输出访问统计和搜索过程
+    if verbose:
+        print(f"\n访问节点数量：{visited_count}")
 
-    # 输出搜索过程
-    print("\n===== BFS 搜索过程 =====")
+        print("\n===== BFS 搜索过程 =====")
 
-    for record in search_log:
+        for record in search_log:
 
-        print(f"\n第 {record['step']} 步")
-        print(f"当前访问：{record['current']}")
-        print(f"新增邻居：{record['new_neighbors']}")
-        print(f"队列：{record['queue']}")
+            print(f"\n第 {record['step']} 步")
+            print(f"当前访问：{record['current']}")
+            print(f"新增邻居：{record['new_neighbors']}")
+            print(f"队列：{record['queue']}")
 
-    # 返回结果
+
+    # 获取最终路径
     if found:
-        return reconstruct_path(parent, start, goal)
+        path = reconstruct_path(parent, start, goal)
+    else:
+        path = None
 
-    return None
+    # 如果需要完整实验数据
+    if return_details:
+
+        return {
+            "path": path,
+
+            "visited": [
+                record["current"]
+                for record in search_log
+            ],
+
+            "search_log": search_log
+        }
+
+    # 默认仍然只返回路径
+    return path
 
 
 if __name__ == "__main__":
