@@ -24,3 +24,6 @@ __pycache__/
 __pycache__/
 *.pyc
 push_retry.bat
+# Python packaging artifacts
+*.egg-info/
+dist/
