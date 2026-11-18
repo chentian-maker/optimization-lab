@@ -1,16 +1,21 @@
 
-class ZDT1:
+from optimization_lab.problems.base import Problem
+
+
+class ZDT1(Problem):
 
     def __init__(self, n_var=30):
 
         if n_var < 2:
             raise ValueError("ZDT1 requires at least 2 variables.")
 
-        self.n_var = n_var
-        self.n_obj = 2
-
-        self.xl = 0.0
-        self.xu = 1.0
+        # 调用父类的初始化方法
+        super().__init__(
+            n_var=n_var,
+            n_obj=2,
+            xl=0.0,
+            xu=1.0
+        )
 
     def evaluate(self, x):
 
@@ -29,7 +34,7 @@ class ZDT1:
         return f1, f2
 
 
-# 保留原来的函数接口，兼容旧代码
+# 兼容旧代码
 def zdt1(x):
     problem = ZDT1(n_var=len(x))
     return problem.evaluate(x)
