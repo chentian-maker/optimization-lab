@@ -85,15 +85,17 @@ int main() {
               created ? "创建成功" : "创建失败");
     }
 
-    // 测试0：学习 assert
-    {
-        int example = 100;
+  // 测试0：普通条件判断
+{
+    int example = 100;
 
-        assert(example == 100);
-
-        cout << "[PASS] assert 示例\n";
-        cout << "  条件 example == 100 成立\n\n";
-    }
+    check(
+        "普通条件判断",
+        example == 100,
+        "example == 100 成立",
+        example == 100 ? "条件成立" : "条件不成立"
+    );
+}
 
     // 测试1：空表
     {

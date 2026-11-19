@@ -27,3 +27,26 @@ push_retry.bat
 # Python packaging artifacts
 *.egg-info/
 dist/
+# CMake build directories
+**/build/
+**/build-debug/
+**/build-release/
+
+# CMake install directory
+**/install/
+
+# CMake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+build.ninja
+.ninja_deps
+.ninja_log
+
+# Compiled files
+*.exe
+*.o
+*.obj
+*.a
+*.dll
+*.lib
